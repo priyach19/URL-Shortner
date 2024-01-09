@@ -22,17 +22,7 @@ router.post('/short', async (req, res) => {
    
   });
 
-  //to get original url from short url
-  router.get('/:id', async (req, res) => {
-    const ID = req.params.id
-    console.log(ID)
-    const link = await Urls.findOne({ compressedcode: ID })
-    link.visited++
-    link.save()
-    return res.redirect(link.originalURL)
-
-})
-
+ 
   router.get('/analytics', async (req, res) => {
     const userId = req.user.userId;
     const urls = await Urls.find({ userId }).sort({ createdAt: 'desc' });
