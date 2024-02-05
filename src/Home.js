@@ -3,63 +3,43 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+// import axios from 'axios';
+
+
 export default function Home() {
-  const [originalUrl, setOriginalUrl] = useState("");
-  const [shortUrl, setShortUrl] = useState("");
-  const [urls, setUrls] = useState([]);
-  const [token, setToken] = useState("");
+  const [redirectURL, setRedirectURL] = useState('');
+  const [shortURL, setShortURL] = useState('');
+  const [token, setToken] = useState('');
 
-  const createShortLink = async (e) => {
+  const shortenUrl = async (e) => {
     e.preventDefault();
-    // You need to replace this with your backend URL
-    const apiUrl = "http://localhost:5000/api/short";
-
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ originalUrl }),
-    });
-
-    const data = await response.json();
-    // setShortUrl(data);
-    console.log(data);
-    setShortUrl(data.shortenLink)
-
-    // Fetch updated analytics after creating a short link
-    fetchAnalytics();
-  };
-
-  const fetchAnalytics = async () => {
-    if (token) {
-      // You need to replace this with your backend URL
-      const apiUrl = "http://localhost:5000/analytics";
-
-      const response = await fetch(apiUrl, {
+    try {
+      const response = await fetch("http://localhost:5000/shorten", {
+        method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          // Authorization: `Bearer ${token}`,
         },
+        body: JSON.stringify({ redirectURL }),
       });
-
       const data = await response.json();
-      setUrls(data);
+      setShortURL(data.shortURL);
+      console.log(data);
+   
+    } catch (error) {
+      console.error('Error shortening URL:', error.message);
     }
   };
 
-  //   const logout = () => {
-  //     setToken("");
-  //     setOriginalUrl("");
-  //     setShortUrl("");
-  //     setUrls([]);
-  //   };
   const handleCopy = () => {
     alert("URL copied!");
   };
 
+  
+
   return (
     <>
+    
       <Navbar expand="lg" className="bg-body-secondary fs-5">
         <Container>
           <Navbar.Brand href="/">Url Shortner</Navbar.Brand>
@@ -82,43 +62,46 @@ export default function Home() {
               type="text"
               id="url"
               name="url"
-              value={originalUrl}
-              onChange={(e) => setOriginalUrl(e.target.value)}
-              placeholder="Enter url...."
-              style={{ width: "400px" }}
+              value={redirectURL}
+              onChange={(e) => setRedirectURL(e.target.value)}
+              placeholder="Enter Url...."
+              style={{ width: "400px" , height:"40px"}}
               required
             />
-
+            
             <button
-              type="submit"
-              className="btn btn-success"
-              onClick={createShortLink}
+              type="button"
+              value={shortURL}
+              style={{height:"40px", backgroundColor:"green", color:"white"}}
+              onClick={shortenUrl}
             >
               Submit
             </button>
+  
           </form>
         </div>
       </div>
+    <hr />
 
-      <hr />
-      <div className="d-flex justify-content-center mb-5">
-        {shortUrl && (
-          <>
-            <h2>Short Url&nbsp;&nbsp;</h2>
-            <input
-              value={shortUrl}
-              style={{ width: "400px" }}
+      <div className="d-flex justify-content-center mb-5">      
+           <form>
+           <h2>Shorten URL</h2>
+           <br/>
+           <input
+              defaultValue={shortURL}
+              style={{ width: "400px", height:"40px"}}
+              placeholder="Get short Url here .."
             />
             <CopyToClipboard
-              text={shortUrl}
+              text={shortURL}
               onCopy={handleCopy}
             >
-              <button style={{ width: "5vw" }} title="Copy">
+              <button style={{ backgroundColor:"black", color:"white", height:"40px"}} title="Copy">
                 Copy
               </button>
             </CopyToClipboard>
-          </>
-        )}
+           </form>
+            
       </div>
     </>
   );

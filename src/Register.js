@@ -3,33 +3,41 @@ import { Link,useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 
 export default function Register() {
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState('');
   const [email,setEmail]=useState("")
-  const [password, setPassword] = useState("");
-  const [token, setToken] = useState('');
+  const [password, setPassword] = useState('');
   const navigate=useNavigate()
 
-  const registerFn = async () => {
-    // You need to replace this with your backend URL
-    const apiUrl = "http://localhost:5000/auth/register";
+  // const registerUser = async () => {
+  //   try {
+  //     await axios.post('/api/register', { username, password });
+  //     alert('User registered successfully');
+  //   } catch (error) {
+  //     console.error('Error registering user:', error.message);
+  //   }
+  // };
 
-    const response = await fetch(apiUrl, {
+  const registerUser = async () => {
+    // You need to replace this with your backend URL
+    const apiUrl = "http://localhost:5000/register";
+   try{
+    await fetch(apiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ username,email, password }),
-    });
+    }).then(data=>console.log(data.json()))
+  
+  
+    navigate("/login")
+   }catch(error){
+    console.error('Error registering user:', error.message);
 
-    const data = await response.json();
-    console.log(data);
-    if (data.token) {
-        setToken(data.token);
-      } else {
-        console.log(data.error);
-      }
-      navigate("/login")
-  };
+   }
+  }
+
+  
 
   return (
   <>
@@ -81,7 +89,7 @@ export default function Register() {
             <button
               type="button"
               className="btn btn-success btn-block btn-lg gradient-custom-4 text-body"
-              onClick={registerFn}
+              onClick={registerUser}
             >
               Register
             </button>

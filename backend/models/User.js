@@ -12,14 +12,13 @@ const userSchema=new Schema({
     password:{
         type:String,
         required:true
-    },
-    links: [
-        {
-            ref: 'Link',
-            type: mongoose.Types.ObjectId
-        }
-    ]
-})
+    }
+    
+},
+{
+    timestamps: true,
+}
+)
 
-const User=mongoose.model("user",userSchema)
+const User=mongoose.model("User",userSchema)
 module.exports=User;
